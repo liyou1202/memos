@@ -50,6 +50,16 @@ func NewServer(ctx context.Context, profile *profile.Profile, store *store.Store
 	echoServer.HideBanner = true
 	echoServer.HidePort = true
 	echoServer.Use(middleware.Recover())
+	echoServer.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{
+			"https://memos.riyuu.cc",
+			"https://memos-c6pr.onrender.com",
+		},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete, http.MethodPatch, http.MethodHead, http.MethodOptions},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization, "grpc-status", "grpc-message", "grpc-encoding", "grpc-accept-encoding"},
+		ExposeHeaders: []string{"grpc-status", "grpc-message"},
+		AllowCredentials: true,
+	}))
 	s.echoServer = echoServer
 
 	// Initialize profiler
